@@ -45,7 +45,7 @@ create or replace schema flowbridge_prod_db.serving_sch
     clone flowbridge_dev_db.serving_sch
 
 --verfiy all schemas cloned
-show schemas in database flowbridge_prod_db
+show schemas in database flowbridge_prod_db;
 
 --grant ownership of PROD schemas to SYSADMIN
 grant ownership on schema flowbridge_prod_db.bronze_sch to role sysadmin copy current grants;
@@ -58,8 +58,8 @@ grant ownership on schema flowbridge_prod_db.serving_sch to role sysadmin copy c
 -- Purpose : Confirm all data cloned correctly
 --           DEV and PROD counts should match exactly
 -- ===================================================================
-Ctrl+I to generate
-use role sysadmin
+
+use role sysadmin;
 
 -- Bronze
 select 'DEV' as env, count(*) as raw_orders from flowbridge_dev_db.bronze_sch.raw_orders
@@ -89,7 +89,7 @@ select 'PROD' as env, count(*) as agg_base from flowbridge_prod_db.gold_sch.agg_
 -- ===================================================================
 
 -- Verify storage integration covers PROD container
-desc integration flowbridge_adls_integration
+desc integration flowbridge_adls_integration;
 
 -- ===================================================================
 -- STEP 4 - RECREATE SNOWPIPE FOR PROD
@@ -111,7 +111,7 @@ create stage if not exists bronze_sch.adls_raw_stage_prod
 
 
 -- Verify stage
-list @bronze_sch.adls_raw_stage_prod
+list @bronze_sch.adls_raw_stage_prod;
 
 
 -- Create PROD Snowpipe
