@@ -3,7 +3,8 @@
 USE DATABASE flowbridge_dev_db;
 USE ROLE ACCOUNTADMIN; 
 
---FLOWBRIDGE_DEV_DB.BRONZE_SCH.ADLS_RAW_STAGEFLOWBRIDGE_DEV_DB.BRONZE_SCH.ADLS_RAW_STAGEFLOWBRIDGE_DEV_DB.BRONZE_SCH.ADLS_RAW_STAGEDROP INTEGRATION IF EXISTS flowbridge_adls_integration;
+--
+-- drop storage integration flowbridge_adls_integration;  -- WARNING: drops grants too
 CREATE STORAGE INTEGRATION IF NOT EXISTS flowbridge_adls_integration
     TYPE = EXTERNAL_STAGE
     STORAGE_PROVIDER = 'AZURE'
@@ -11,7 +12,7 @@ CREATE STORAGE INTEGRATION IF NOT EXISTS flowbridge_adls_integration
     AZURE_TENANT_ID = '91cabf99-9f71-494e-afed-64b3b4a0b3a9'
     STORAGE_ALLOWED_LOCATIONS = (
         'azure://flowbridgeproject.blob.core.windows.net/supply-chain-raw-dev/',
-        'azure://flowbridgeproject.blob.core.windows.net/supply-chain_raw-prod/'
+        'azure://flowbridgeproject.blob.core.windows.net/supply-chain-raw-prod/'
     );
 
 SHOW INTEGRATIONS;
@@ -35,23 +36,23 @@ grant usage on  integration flowbridge_azure_notifications_int to role sysadmin;
 use role sysadmin;
 use database flowbridge_dev_db;
 use schema flowbridge_dev_db.bronze_sch;
-use warehouse flowbridge_pipeline_wh
+use warehouse flowbridge_pipeline_wh;
 
 --file format
 create file format if not exists bronze_sch.json_file_format
     type ='json'
     strip_outer_array = true
-    comment ='JSON File Format for Flowbridge Project'
+    comment ='JSON File Format for Flowbridge Project';
 
 desc file format json_file_format;
 
 --DROP STAGE IF EXISTS bronze_sch.adls_raw_stage;
 
 --external stage
-create stage if not exists bronze_sch.adls_raw_stage
+CREATE STAGE IF NOT EXISTS FLOWBRIDGE_DEV_DB.bronze_sch.adls_raw_stage
     url = 'azure://flowbridgeproject.blob.core.windows.net/supply-chain-raw-dev/'
     storage_integration = flowbridge_adls_integration
-    file_format = bronze_sch.json_file_format
+    file_format = FLOWBRIDGE_DEV_DB.bronze_sch.json_file_format
     comment = 'External Stage - ADLS Gen2 DEV container';
 
 list @bronze_sch.adls_raw_stage
