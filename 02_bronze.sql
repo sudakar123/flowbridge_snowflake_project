@@ -75,11 +75,13 @@ create pipe if not exists bronze_sch.supply_chain_pipe
 as
 copy into bronze_sch.raw_orders (
     raw_data,
+    ingested_at,
     file_name,
     file_row_number
 )
 from (
     select $1,
+    current_timestamp(),
            metadata$filename,
            metadata$file_row_number
     from @bronze_sch.adls_raw_stage
